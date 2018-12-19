@@ -8,13 +8,13 @@ fun main(args: Array<String>) {
     val routes: MutableList<List<Child>> = mutableListOf()
 
     while (santasHelper.pendingLocations() > 0) {
-        santasHelper.scoutRoute()
-        routes.add(santasHelper.clearRoute())
-        println("One route found")
+        routes.add(santasHelper.scoutRoute())
     }
 
     println("Santa, I am ready!")
-
+    val out = File("output.csv")
+    out.writeText("")
+    routes.map { it.joinToString(separator = "; ") { it.id } }.forEach { out.appendText(it + "\n") }
 }
 
 fun readChildren(filename: String): List<Child> =
@@ -33,36 +33,60 @@ class SantasLittleHelper(val world: List<Child>) {
     var currentLocation = KORVATUNTURI
 
     fun pendingLocations(): Int {
-        return world.size
+        return children.size
     }
 
     fun scoutRoute(): List<Child> {
         val route: MutableList<Child> = mutableListOf()
-        var sleightIsFull = false
         var sleightWeight = 0
 
-        while (!sleightIsFull) {
+        while (sleightWeight < 10000000 && children.isNotEmpty()) {
             val next = findNearest()
-            if (sleightWeight + next.giftWeight <= 10000000) {
-                sleightWeight += next.giftWeight
+            sleightWeight += next.giftWeight
+
+            if (sleightWeight < 10000000) {
                 currentLocation = next.location
                 route.add(next)
                 children.remove(next)
-            } else {
-                sleightIsFull = true
             }
         }
 
+        currentLocation = KORVATUNTURI
+        println("Scouted for route with ${route.size} stops")
+        println("${children.size} stops remaining")
         return route.toList()
     }
 
     private fun findNearest(): Child {
-        return world.get(0)
+
+        var nearest = children[0]
+        var nearestDistance = Float.MAX_VALUE
+        for (child in children) {
+            val distance = distance(currentLocation, child.location)
+            if (distance < nearestDistance) {
+                nearestDistance = distance
+                nearest = child
+            }
+        }
+
+        return nearest
     }
 
-    fun clearRoute(): List<Child> {
-        return emptyList();
+    private fun distance(location1: Location, location2: Location): Float {
+        val lat1 = location1.lat
+        val lng1 = location1.lon
+        val lat2 = location2.lat
+        val lng2 = location2.lon
+        val earthRadius = 6378000
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLng = Math.toRadians(lng2 - lng1)
+        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                Math.sin(dLng / 2) * Math.sin(dLng / 2)
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+        return (earthRadius * c).toFloat()
     }
+
 }
 
 
