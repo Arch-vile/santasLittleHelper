@@ -43,21 +43,16 @@ class SantasLittleHelper(val world: List<Child>) {
     }
 
     fun scoutRoute(): Route {
-
-        println("%f".format(distance(Location(25.976517, -80.183687), Location(2.818585, 44.11212))))
-        System.exit(1)
-
-
         val route: MutableList<Child> = mutableListOf()
         var sleightWeight = 0
         var routeLength: Double = 0.0
 
         while (sleightWeight < 10000000 && children.isNotEmpty()) {
             val next = findNearest()
-            routeLength += distance(currentLocation, next.location)
             sleightWeight += next.giftWeight
 
             if (sleightWeight < 10000000) {
+                routeLength += distance(currentLocation, next.location)
                 currentLocation = next.location
                 route.add(next)
                 children.remove(next)
@@ -88,28 +83,16 @@ class SantasLittleHelper(val world: List<Child>) {
 
     private fun distance(location1: Location, location2: Location): Double {
         val lat1 = location1.lat
-        pr(lat1)
         val lng1 = location1.lon
-        pr(lng1)
         val lat2 = location2.lat
-        pr(lat2)
         val lng2 = location2.lon
-        pr(lng2)
         val earthRadius = 6378000.0
         val dLat = Math.toRadians(lat2 - lat1)
-        pr(dLat)
         val dLng = Math.toRadians(lng2 - lng1)
-        pr(dLng)
         val a = Math.sin(dLat / 2.0) * Math.sin(dLat / 2.0) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
                 Math.sin(dLng / 2.0) * Math.sin(dLng / 2.0)
-        pr(a)
         val c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a))
-        pr(c)
         return (earthRadius * c)
-    }
-
-    private fun pr(value: Double) {
-        println("%f".format(value))
     }
 
 }
