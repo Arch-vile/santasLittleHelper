@@ -1,3 +1,4 @@
+import java.awt.Color.red
 import java.io.File
 import java.util.*
 
@@ -9,9 +10,9 @@ fun main(args: Array<String>) {
     val santasHelper = SantasLittleHelper(readChildren("src/nicelist.txt"))
     val routes: MutableList<Route> = mutableListOf()
 
-    while (santasHelper.pendingLocations() > 0) {
+    //while (santasHelper.pendingLocations() > 0) {
         routes.add(santasHelper.scoutRoute())
-    }
+    //}
 
     println("Santa, I am ready!")
     val out = File("output.csv")
@@ -37,6 +38,7 @@ class SantasLittleHelper(val world: List<Child>) {
 
     val children = world.toMutableList()
     val KORVATUNTURI = Location(68.073611, 29.315278)
+    var sleightCapacity = 10000000
     var currentLocation = KORVATUNTURI
 
     fun pendingLocations(): Int {
@@ -53,35 +55,75 @@ class SantasLittleHelper(val world: List<Child>) {
         return route
     }
 
+    // TODO: Targetarea must contain only amount of presents that can fit
+    // We could probably optimize this by making target area bigger but this needs to be taken into account in the permutations
+    // otherwise we will have multiple permutations with the same first N items that will fill the sleight so we have
+    // done unnecessary calculations
     private fun optimizeRoute(targetArea: List<Child>): Route {
 
-        val numbers = listOf<Int>(1, 2, 3, 4)
+        var bestScore = Double.MIN_VALUE
+        var bestRoute = emptyList<Child>()
+        var routesEvaluated = 0
 
+        permutations(targetArea) { s ->
+            val route = s.toMutableList()
+            // Add korvatunturi as the first and last location
+            route.add(0, Child("joulupukki", KORVATUNTURI, 0))
+            route.add(Child("joulupukki", KORVATUNTURI, 0))
 
-        permutations(numbers, { s -> println(s.toArray()) })
-        System.exit(1)
+            val score = valueFunction(route)
+            if (score > bestScore) {
+                bestScore = score
+                bestRoute = route
+            }
+            routesEvaluated++
+            if(routesEvaluated % 10000 == 0)
+            println("Routes evaluated: $routesEvaluated")
+        }
 
-
-
-
-        return Route(emptyList(), 0.0)
+        return Route(bestRoute, routeLength(bestRoute))
     }
 
-    fun permutations(items: List<Int>, handler: (Stack<Int>) -> Unit) {
-        return permutations(items.toMutableList(), Stack<Int>(), items.size, handler)
+    // TODO: If target area will be bigger then sleight can handle value function should prioritize amount of stops??
+    private fun valueFunction(route: List<Child>): Double {
+        val routeLength = routeLength(route)
+        return Double.MIN_VALUE + routeLength
     }
 
+    private fun routeLength(route: List<Child>): Double {
+        var length = 0.0
+        for(i in 0 until route.size-1) {
+            length += distance(route[i].location, route[i+1].location)
+        }
 
-    fun permutations(items: MutableList<Int>, permutation: Stack<Int>, size: Int, handler: (Stack<Int>) -> Unit) {
+        return length
+    }
+
+    fun permutations(items: List<Child>, handler: (Stack<Child>) -> Unit) {
+        println("Finding ${factorial(items.size)} permutations")
+        return permutations(items.toMutableList(), Stack(), items.size, handler)
+    }
+
+    fun factorial(number: Int): Long {
+        var result: Long = 1
+
+        for (factor in 2..number) {
+            result *= factor.toLong()
+        }
+
+        return result
+    }
+    fun permutations(items: MutableList<Child>, permutation: Stack<Child>, size: Int, handler: (Stack<Child>) -> Unit) {
 
         /* permutation stack has become equal to size that we require */
         if (permutation.size == size) {
             /* print the permutation */
-            println(Arrays.toString(permutation.toTypedArray()))
+            //println(Arrays.toString(permutation.toTypedArray()))
+            handler(permutation)
         }
 
         /* items available for permutation */
-        val availableItems = items.toIntArray()
+        val availableItems = items.toTypedArray()
         for (i in availableItems) {
             /* add current item */
             permutation.push(i)
@@ -97,8 +139,29 @@ class SantasLittleHelper(val world: List<Child>) {
         }
     }
 
+
     private fun nextArea(): List<Child> {
-        return emptyList()
+
+        val remaining = world.toMutableList()
+        val center = findNearest(KORVATUNTURI, remaining)
+        remaining.remove(center)
+
+        val area = mutableListOf(center)
+
+        var weight = center.giftWeight
+        while(weight < sleightCapacity) {
+
+            val next = findNearest(center.location, remaining)
+            weight += next.giftWeight
+
+            if(weight <= sleightCapacity) {
+                area.add(next)
+                remaining.remove(next)
+            }
+        }
+
+        println("Determined next area for present delivery with ${area.size} children")
+        return area
     }
 
     private fun findFurthest(): Child {
@@ -115,11 +178,11 @@ class SantasLittleHelper(val world: List<Child>) {
         return furthest
     }
 
-    private fun findNearest(): Child {
+    private fun findNearest(location: Location, children: List<Child>): Child {
         var nearest = children[0]
         var nearestDistance = Double.MAX_VALUE
         for (child in children) {
-            val distance = distance(currentLocation, child.location)
+            val distance = distance(location, child.location)
             if (distance < nearestDistance) {
                 nearestDistance = distance
                 nearest = child
