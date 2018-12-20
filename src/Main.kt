@@ -5,7 +5,7 @@ fun main(args: Array<String>) {
     println("Hello, Santa!")
 
     val santasHelper = SantasLittleHelper(readChildren("src/nicelist.txt"))
-    val routes: MutableList<List<Child>> = mutableListOf()
+    val routes: MutableList<Route> = mutableListOf()
 
     while (santasHelper.pendingLocations() > 0) {
         routes.add(santasHelper.scoutRoute())
@@ -14,7 +14,10 @@ fun main(args: Array<String>) {
     println("Santa, I am ready!")
     val out = File("output.csv")
     out.writeText("")
-    routes.map { it.joinToString(separator = "; ") { it.id } }.forEach { out.appendText(it + "\n") }
+    routes.map { it.stops.joinToString(separator = "; ") { it.id } }.forEach { out.appendText(it + "\n") }
+
+    val routeLength = routes.map { it.length }.fold(0.0) { acc, d -> acc + d }
+    println("Route length $routeLength")
 }
 
 fun readChildren(filename: String): List<Child> =
@@ -26,6 +29,8 @@ data class Location(val lat: Double, val lon: Double)
 
 data class Child(val id: String, val location: Location, val giftWeight: Int)
 
+data class Route(val stops: List<Child>, val length: Double)
+
 class SantasLittleHelper(val world: List<Child>) {
 
     val children = world.toMutableList()
@@ -36,12 +41,14 @@ class SantasLittleHelper(val world: List<Child>) {
         return children.size
     }
 
-    fun scoutRoute(): List<Child> {
+    fun scoutRoute(): Route {
         val route: MutableList<Child> = mutableListOf()
         var sleightWeight = 0
+        var routeLength: Double = 0.0
 
         while (sleightWeight < 10000000 && children.isNotEmpty()) {
             val next = findNearest()
+            routeLength += distance(currentLocation, next.location)
             sleightWeight += next.giftWeight
 
             if (sleightWeight < 10000000) {
@@ -51,10 +58,11 @@ class SantasLittleHelper(val world: List<Child>) {
             }
         }
 
+        routeLength += distance(currentLocation, KORVATUNTURI)
         currentLocation = KORVATUNTURI
         println("Scouted for route with ${route.size} stops")
         println("${children.size} stops remaining")
-        return route.toList()
+        return Route(route.toList(), routeLength)
     }
 
     private fun findNearest(): Child {
