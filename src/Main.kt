@@ -4,6 +4,7 @@ import java.io.File
 fun main(args: Array<String>) {
     println("Hello, Santa!")
 
+
     val santasHelper = SantasLittleHelper(readChildren("src/nicelist.txt"))
     val routes: MutableList<Route> = mutableListOf()
 
@@ -42,6 +43,11 @@ class SantasLittleHelper(val world: List<Child>) {
     }
 
     fun scoutRoute(): Route {
+
+        println("%f".format(distance(Location(25.976517, -80.183687), Location(2.818585, 44.11212))))
+        System.exit(1)
+
+
         val route: MutableList<Child> = mutableListOf()
         var sleightWeight = 0
         var routeLength: Double = 0.0
@@ -68,7 +74,7 @@ class SantasLittleHelper(val world: List<Child>) {
     private fun findNearest(): Child {
 
         var nearest = children[0]
-        var nearestDistance = Float.MAX_VALUE
+        var nearestDistance = Double.MAX_VALUE
         for (child in children) {
             val distance = distance(currentLocation, child.location)
             if (distance < nearestDistance) {
@@ -80,19 +86,30 @@ class SantasLittleHelper(val world: List<Child>) {
         return nearest
     }
 
-    private fun distance(location1: Location, location2: Location): Float {
+    private fun distance(location1: Location, location2: Location): Double {
         val lat1 = location1.lat
+        pr(lat1)
         val lng1 = location1.lon
+        pr(lng1)
         val lat2 = location2.lat
+        pr(lat2)
         val lng2 = location2.lon
-        val earthRadius = 6378000
+        pr(lng2)
+        val earthRadius = 6378000.0
         val dLat = Math.toRadians(lat2 - lat1)
+        pr(dLat)
         val dLng = Math.toRadians(lng2 - lng1)
-        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                Math.sin(dLng / 2) * Math.sin(dLng / 2)
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+        pr(dLng)
+        val a = Math.sin(dLat / 2.0) * Math.sin(dLat / 2.0) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                Math.sin(dLng / 2.0) * Math.sin(dLng / 2.0)
+        pr(a)
+        val c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a))
+        pr(c)
+        return (earthRadius * c)
+    }
 
-        return (earthRadius * c).toFloat()
+    private fun pr(value: Double) {
+        println("%f".format(value))
     }
 
 }
