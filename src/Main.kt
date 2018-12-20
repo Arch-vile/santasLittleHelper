@@ -1,4 +1,5 @@
 import java.io.File
+import java.util.*
 
 
 fun main(args: Array<String>) {
@@ -43,31 +44,78 @@ class SantasLittleHelper(val world: List<Child>) {
     }
 
     fun scoutRoute(): Route {
-        val route: MutableList<Child> = mutableListOf()
-        var sleightWeight = 0
-        var routeLength: Double = 0.0
+        val targetArea = nextArea()
+        val route = optimizeRoute(targetArea)
 
-        while (sleightWeight < 10000000 && children.isNotEmpty()) {
-            val next = findNearest()
-            sleightWeight += next.giftWeight
+        currentLocation = KORVATUNTURI
+        println("Scouted for route with ${route.stops.size} stops")
+        println("${children.size} stops remaining")
+        return route
+    }
 
-            if (sleightWeight < 10000000) {
-                routeLength += distance(currentLocation, next.location)
-                currentLocation = next.location
-                route.add(next)
-                children.remove(next)
+    private fun optimizeRoute(targetArea: List<Child>): Route {
+
+        val numbers = listOf<Int>(1, 2, 3, 4)
+
+
+        permutations(numbers, { s -> println(s.toArray()) })
+        System.exit(1)
+
+
+
+
+        return Route(emptyList(), 0.0)
+    }
+
+    fun permutations(items: List<Int>, handler: (Stack<Int>) -> Unit) {
+        return permutations(items.toMutableList(), Stack<Int>(), items.size, handler)
+    }
+
+
+    fun permutations(items: MutableList<Int>, permutation: Stack<Int>, size: Int, handler: (Stack<Int>) -> Unit) {
+
+        /* permutation stack has become equal to size that we require */
+        if (permutation.size == size) {
+            /* print the permutation */
+            println(Arrays.toString(permutation.toTypedArray()))
+        }
+
+        /* items available for permutation */
+        val availableItems = items.toIntArray()
+        for (i in availableItems) {
+            /* add current item */
+            permutation.push(i)
+
+            /* remove item from available item set */
+            items.remove(i)
+
+            /* pass it on for next permutation */
+            permutations(items, permutation, size, handler)
+
+            /* pop and put the removed item back */
+            items.add(permutation.pop())
+        }
+    }
+
+    private fun nextArea(): List<Child> {
+        return emptyList()
+    }
+
+    private fun findFurthest(): Child {
+        var furthest = children[0]
+        var furthestDistance = Double.MIN_VALUE
+        for (child in children) {
+            val distance = distance(currentLocation, child.location)
+            if (distance > furthestDistance) {
+                furthestDistance = distance
+                furthest = child
             }
         }
 
-        routeLength += distance(currentLocation, KORVATUNTURI)
-        currentLocation = KORVATUNTURI
-        println("Scouted for route with ${route.size} stops")
-        println("${children.size} stops remaining")
-        return Route(route.toList(), routeLength)
+        return furthest
     }
 
     private fun findNearest(): Child {
-
         var nearest = children[0]
         var nearestDistance = Double.MAX_VALUE
         for (child in children) {
