@@ -1,11 +1,10 @@
-import java.awt.Color.red
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 fun main(args: Array<String>) {
     println("Hello, Santa!")
-
 
     val santasHelper = SantasLittleHelper(readChildren("src/nicelist.txt"))
     val routes: MutableList<Route> = mutableListOf()
@@ -17,7 +16,7 @@ fun main(args: Array<String>) {
     println("Santa, I am ready!")
     val out = File("output.csv")
     out.writeText("")
-    routes.map { it.stops.joinToString(separator = "; ") { it.id } }.forEach { out.appendText(it + "\n") }
+    routes.map { it.stops.joinToString(separator = "; ") { it.id.toString() } }.forEach { out.appendText(it + "\n") }
 
     val routeLength = routes.map { it.length }.fold(0.0) { acc, d -> acc + d }
     println("Route length $routeLength")
@@ -26,11 +25,11 @@ fun main(args: Array<String>) {
 fun readChildren(filename: String): List<Child> =
         File(filename).useLines { it.toList() }
                 .map { it.split(";") }
-                .map { Child(it[0], Location(it[1].toDouble(), it[2].toDouble()), it[3].toInt()) }
+                .map { Child(it[0].toInt(), Location(it[1].toDouble(), it[2].toDouble()), it[3].toInt()) }
 
 data class Location(val lat: Double, val lon: Double)
 
-data class Child(val id: String, val location: Location, val giftWeight: Int)
+data class Child(val id: Int, val location: Location, val giftWeight: Int)
 
 data class Route(val stops: List<Child>, val length: Double)
 
@@ -60,28 +59,17 @@ class SantasLittleHelper(val world: List<Child>) {
     // otherwise we will have multiple permutations with the same first N items that will fill the sleight so we have
     // done unnecessary calculations
     private fun optimizeRoute(targetArea: List<Child>): Route {
+        println("optimizing route for ${targetArea.size} locations")
 
-        var bestScore = Double.MIN_VALUE
-        var bestRoute = emptyList<Child>()
-        var routesEvaluated = 0
+        val points = targetArea.map { Point(it.location.lat, it.location.lon) }
+        val ids = targetArea.map { it.id }
+        val linKernighan = LinKernighan(ArrayList(points), ArrayList(ids))
 
-        permutations(targetArea) { s ->
-            val route = s.toMutableList()
-            // Add korvatunturi as the first and last location
-            route.add(0, Child("joulupukki", KORVATUNTURI, 0))
-            route.add(Child("joulupukki", KORVATUNTURI, 0))
+        linKernighan.runAlgorithm()
 
-            val score = valueFunction(route)
-            if (score > bestScore) {
-                bestScore = score
-                bestRoute = route
-            }
-            routesEvaluated++
-            if(routesEvaluated % 10000 == 0)
-            println("Routes evaluated: $routesEvaluated")
-        }
+        val route = linKernighan.tour.map { index -> targetArea[index] }
 
-        return Route(bestRoute, routeLength(bestRoute))
+        return Route(route, routeLength(route))
     }
 
     // TODO: If target area will be bigger then sleight can handle value function should prioritize amount of stops??
@@ -92,8 +80,8 @@ class SantasLittleHelper(val world: List<Child>) {
 
     private fun routeLength(route: List<Child>): Double {
         var length = 0.0
-        for(i in 0 until route.size-1) {
-            length += distance(route[i].location, route[i+1].location)
+        for (i in 0 until route.size - 1) {
+            length += distance(route[i].location, route[i + 1].location)
         }
 
         return length
@@ -113,6 +101,7 @@ class SantasLittleHelper(val world: List<Child>) {
 
         return result
     }
+
     fun permutations(items: MutableList<Child>, permutation: Stack<Child>, size: Int, handler: (Stack<Child>) -> Unit) {
 
         /* permutation stack has become equal to size that we require */
@@ -149,12 +138,12 @@ class SantasLittleHelper(val world: List<Child>) {
         val area = mutableListOf(center)
 
         var weight = center.giftWeight
-        while(weight < sleightCapacity) {
+        while (weight < sleightCapacity) {
 
             val next = findNearest(center.location, remaining)
             weight += next.giftWeight
 
-            if(weight <= sleightCapacity) {
+            if (weight <= sleightCapacity) {
                 area.add(next)
                 remaining.remove(next)
             }
