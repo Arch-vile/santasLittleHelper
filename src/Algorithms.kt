@@ -14,7 +14,7 @@ fun shortestPath(coords: List<Location>): List<Location> {
 fun binPacking(area: List<Child>): List<Sleight> {
     val start = System.currentTimeMillis()
     val sleights = FFDPacking(area, SLEIGHT_CAPACITY).packSleights()
-    println("[DONE] Bin packing ${area.size} places [${System.currentTimeMillis() - start}] to ${sleights.size} sleights")
-    sleights.forEachIndexed { index, sleight -> println("Sleigh weight ${SLEIGHT_CAPACITY - sleight.capacity} ${1.0 * (SLEIGHT_CAPACITY - sleight.capacity) / SLEIGHT_CAPACITY} %") }
+//    println("[DONE ${System.currentTimeMillis() - start}ms] Bin packing ${area.size} places to ${sleights.size} sleights")
+//    sleights.forEachIndexed { index, sleight -> println("Sleigh weight ${SLEIGHT_CAPACITY - sleight.capacity} ${1.0 * (SLEIGHT_CAPACITY - sleight.capacity) / SLEIGHT_CAPACITY} %") }
     return sleights
 }

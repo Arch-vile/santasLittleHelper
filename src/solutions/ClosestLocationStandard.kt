@@ -51,8 +51,8 @@ class ClosestLocationStandard(setup: List<Child>) {
         }
 
         currentLocation = KORVATUNTURI
-        println("Scouted for route with ${route.size} stops")
-        println("${children.size} stops remaining")
+//        println("Scouted for route with ${route.size} stops")
+//        println("${children.size} stops remaining")
         return Route(route.toList())
     }
 
