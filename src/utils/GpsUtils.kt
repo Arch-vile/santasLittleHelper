@@ -3,6 +3,7 @@ package utils
 import model.Child
 import model.Location
 import model.Route
+import model.SLEIGHT_CAPACITY
 
 fun km(value: Int) = value * 1000
 
@@ -60,3 +61,12 @@ fun routeLength(route: Route): Double {
     length += distance(current, KORVATUNTURI)
     return length
 }
+
+fun averageCapacityPercent(solution: List<Route>): Double {
+    return solution
+            .map {
+                (it.stops.map { it.giftWeight }.sum().toDouble()) / SLEIGHT_CAPACITY
+            }
+            .average()
+}
+

@@ -1,7 +1,10 @@
+import static utils.GpsUtilsKt.distance;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
+import model.Location;
 
 public class LinKernighan {
     //The instance variables definitions
@@ -9,7 +12,7 @@ public class LinKernighan {
     // The ids of all the cities (sorted)
 
     // The coordinates of all the cities
-    private ArrayList<Point> coordinates;
+    private ArrayList<Location> coordinates;
 
     // The number of cities of this instance
     private int size;
@@ -26,7 +29,7 @@ public class LinKernighan {
      * param ArrayList<Point> the coordinates of all the cities
      * param ArrayList<Integer> the id of all the cities
      */ 
-    public LinKernighan(ArrayList<Point> coordinates) {
+    public LinKernighan(ArrayList<Location> coordinates) {
         this.coordinates = coordinates;
         this.size = coordinates.size();
         this.tour = createRandomTour();
@@ -67,14 +70,10 @@ public class LinKernighan {
 
         for(int i = 0; i < this.size-1; ++i) {
             for(int j = i + 1; j < this.size; ++j) {
-                Point p1 = this.coordinates.get(i);
-                Point p2 = this.coordinates.get(j);
+                Location p1 = this.coordinates.get(i);
+                Location p2 = this.coordinates.get(j);
 
-                res[i][j] = Math.sqrt(
-                    Math.pow(p2.getX() - p1.getX(), 2) +
-                    Math.pow(p2.getY() - p1.getY(), 2) 
-                );
-
+                res[i][j] = distance(p1,p2);
                 res[j][i] = res[i][j];
             }
         }

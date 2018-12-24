@@ -13,8 +13,8 @@ fun main(args: Array<String>) {
         val solution2 = BinPacking(input).solve()
 
         println("$range\t${input.size}\t" +
-                "closest\t${solution1.size}\t${routeLength(solution1)}\t" +
-                "binPack\t${solution2.size}\t${routeLength(solution2)}\t")
+                "closest\t${solution1.size}\t${routeLength(solution1)}\t${averageCapacityPercent(solution1)}\t" +
+                "binPack\t${solution2.size}\t${routeLength(solution2)}\t${averageCapacityPercent(solution2)}\t")
 
 //        exportForGpsVizualizerTrack(solution[0].stops)
     }

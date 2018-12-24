@@ -2,12 +2,11 @@ import model.Child
 import model.Location
 import model.SLEIGHT_CAPACITY
 
-fun shortestPath(coords: List<Location>): List<Location> {
-    val points = coords.map { Point(it.lat, it.lon) }
+fun shortestPath(coords: List<Child>): List<Child> {
+    val points = coords.map { it.location }
 
     val linKernighan = LinKernighan(ArrayList(points))
     linKernighan.runAlgorithm()
-    throw Exception("Algorithm need to handle gps distance. Otherwise points on 180 degrees and 0 will be considered far away")
     return linKernighan.tour.map { index -> coords[index] }
 }
 
