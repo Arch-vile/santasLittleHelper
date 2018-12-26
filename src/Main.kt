@@ -1,9 +1,33 @@
+import model.Route
 import solutions.BinPacking
 import solutions.ClosestLocationStandard
 import utils.*
 
-
 fun main(args: Array<String>) {
+
+
+    val children = readInput("resources/nicelist.txt").toMutableList()
+    val startCount = children.size
+    val target = 8135970987
+
+    var routes = emptyList<Route>().toMutableList()
+    while (children.size > 0) {
+        val nextArea = furthestCircularArea(children, 30)
+
+//        get the best bin!!! loop with different counts
+
+        val solution = BinPacking(nextArea).solve()[0]
+        children.removeAll(solution.stops)
+        routes.add(solution)
+        val length = routeLength(routes)
+        println("${children.size}\t${String.format("%f", length)}\t${ (1.0*startCount-children.size)/startCount }\t${(length*1.0)/target }")
+    }
+
+    println(String.format("%f", routeLength(routes)))
+
+}
+
+fun compare(args: Array<String>) {
     println("Hello, Santa!")
 
 
