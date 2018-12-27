@@ -12,8 +12,13 @@ class BinPacking(setup: List<Child>) {
     fun solve(): List<Route> {
         return binPacking(children)
                 .map { it.children }
-                .map { shortestPath(it)}
+                .map { shortestPath(it) }
                 .map { Route(it) }
+    }
+
+    fun maxedSleight(): Route {
+        return Route(shortestPath(binPacking(children)
+                .minBy { it.capacity }!!.children))
     }
 
 }
