@@ -29,21 +29,26 @@ fun circularArea(locations: List<Child>, center: Location, radius: Int): List<Ch
             .filter { distance(center, it.location) <= radius }
 }
 
+fun closestCircularArea(children: List<Child>, count: Int): List<Child> {
+    return findCircularArea(children, count, findClosest(KORVATUNTURI, children))
+}
 fun furthestCircularArea(children: List<Child>, count: Int): List<Child> {
+    return findCircularArea(children, count, findFurthest(KORVATUNTURI, children))
+}
 
-    val center = findFurthest(KORVATUNTURI, children)
+fun findCircularArea(children: List<Child>, count: Int, center: Child): List<Child> {
     var radius = km(10)
     var area = circularArea(children, center.location, radius)
 
-    while(area.size < count && area.size != children.size) {
+    while (area.size < count && area.size != children.size) {
         radius += km(10)
-        area = circularArea(children,center.location, radius)
+        area = circularArea(children, center.location, radius)
     }
 
-    if(area.size > 200) {
+    if (area.size > 200) {
         throw Exception("Too large area: ${area.size} with radius: ${radius}")
     }
-   return area
+    return area
 }
 
 private fun findFurthest(location: Location, children: List<Child>): Child =

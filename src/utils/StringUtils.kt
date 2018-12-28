@@ -1,5 +1,9 @@
 package utils
 
-fun formatInt(d: Double): String {
-    return String.format("%.0f",d).padStart(15,'0').toString()
+import java.text.DecimalFormat
+
+var formatter = DecimalFormat("###,###")
+
+fun forHumans(d: Double): String {
+    return formatter.format(d)
 }

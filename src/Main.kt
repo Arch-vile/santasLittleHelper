@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 
 fun main(args: Array<String>) {
 
+
     for (areaSize in 5..100 step 5) {
 
         val children = readInput("resources/nicelist.txt").toMutableList()
@@ -14,7 +15,7 @@ fun main(args: Array<String>) {
 
         var routes = emptyList<Route>().toMutableList()
         while (children.size > 0) {
-            val nextArea = furthestCircularArea(children, areaSize)
+            val nextArea = closestCircularArea(children, areaSize)
 
             // Do the binpacking and select the max sleight
             val solution = BinPacking(nextArea).maxedSleight()
@@ -28,7 +29,7 @@ fun main(args: Array<String>) {
 
         println(LocalDateTime.now().toString() +
                 " area size ${areaSize.toString().padStart(5)}" +
-                " route length " + formatInt(routeLength(routes)))
+                " route length " + forHumans(routeLength(routes)))
     }
 }
 
