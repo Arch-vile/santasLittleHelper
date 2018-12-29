@@ -79,13 +79,7 @@ fun routeLength(solution: List<Route>): Double {
 }
 
 fun routeLength(route: Route): Double {
-    val roundtrip = route.stops.map { it }.toMutableList()
-    roundtrip.add(0, KORVATUNTURI)
-    roundtrip.add(KORVATUNTURI)
-    return pathLength(roundtrip)
-}
-
-fun pathLength(locations: List<Location>): Double {
+    val locations = route.stops
     var length = 0.0
     var current = locations[0]
     for (location in locations.subList(1, locations.size)) {

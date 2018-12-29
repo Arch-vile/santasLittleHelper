@@ -19,3 +19,28 @@ fun shortestRouteFromKorvatunturi(locations: List<Location>): Route {
 
     return Route(routeStops)
 }
+
+fun shortestRouteFromKorvatunturiLooping(locations: List<Location>): Route {
+
+    var minRoute = shortestRouteFromKorvatunturi(locations)
+    var minLength = Double.MAX_VALUE
+    for(i in 1..1000) {
+        val route = shortestRouteFromKorvatunturi(locations.shuffled())
+        val routeLength = routeLength(route)
+        if(routeLength < minLength) {
+            minRoute = route
+            minLength = routeLength
+        }
+    }
+
+    return minRoute
+
+}
+
+fun routeFromKorvatunturi(locations: List<Location>): Route {
+    val stops = locations.toMutableList()
+    stops.add(0,KORVATUNTURI)
+    stops.add(KORVATUNTURI)
+    return Route(stops)
+}
+

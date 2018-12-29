@@ -5,6 +5,7 @@ import model.Route
 import model.SLEIGHT_CAPACITY
 import utils.KORVATUNTURI
 import utils.distance
+import utils.routeFromKorvatunturi
 
 
 class ClosestLocationStandard(setup: List<Location>) {
@@ -51,7 +52,7 @@ class ClosestLocationStandard(setup: List<Location>) {
         }
 
         currentLocation = KORVATUNTURI
-        return Route(route.toList())
+        return routeFromKorvatunturi(route.toList())
     }
 
 }
