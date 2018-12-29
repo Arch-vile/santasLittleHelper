@@ -15,7 +15,7 @@ class AreaSelection(setup: List<Location>) {
 
         val routes: MutableList<Route> = mutableListOf()
         while (locations.isNotEmpty()) {
-            val center = findClosest(KORVATUNTURI, locations)
+            val center = findFurthest(KORVATUNTURI, locations)
             val area = expandUntilFull(center, locations)
 
             val route = shortestRouteFromKorvatunturiLooping(area)
