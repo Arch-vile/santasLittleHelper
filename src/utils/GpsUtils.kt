@@ -32,6 +32,7 @@ fun circularArea(locations: List<Child>, center: Location, radius: Int): List<Ch
 fun closestCircularArea(children: List<Child>, count: Int): List<Child> {
     return findCircularArea(children, count, findClosest(KORVATUNTURI, children))
 }
+
 fun furthestCircularArea(children: List<Child>, count: Int): List<Child> {
     return findCircularArea(children, count, findFurthest(KORVATUNTURI, children))
 }
@@ -51,10 +52,10 @@ fun findCircularArea(children: List<Child>, count: Int, center: Child): List<Chi
     return area
 }
 
-private fun findFurthest(location: Location, children: List<Child>): Child =
+fun findFurthest(location: Location, children: List<Child>): Child =
         findByDistance(location, children) { current, best -> current > best }
 
-private fun findClosest(location: Location, children: List<Child>): Child =
+fun findClosest(location: Location, children: List<Child>): Child =
         findByDistance(location, children) { current, best -> current < best }
 
 
@@ -79,14 +80,19 @@ fun routeLength(solution: List<Route>): Double {
 }
 
 fun routeLength(route: Route): Double {
+    val roundtrip = route.stops.map { it.location }.toMutableList()
+    roundtrip.add(0, KORVATUNTURI)
+    roundtrip.add(KORVATUNTURI)
+    return pathLength(roundtrip)
+}
+
+fun pathLength(locations: List<Location>): Double {
     var length = 0.0
-    var current = KORVATUNTURI
-    for (location in route.stops.map { it.location }) {
+    var current =locations[0]
+    for (location in locations.subList(1,locations.size)) {
         length += distance(current, location)
         current = location
     }
-
-    length += distance(current, KORVATUNTURI)
     return length
 }
 

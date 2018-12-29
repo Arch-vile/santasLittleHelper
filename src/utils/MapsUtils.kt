@@ -4,13 +4,14 @@ import model.Child
 import java.io.File
 
 fun exportForGpsVizualizer(locations: List<Child>) {
-    val file = File("resources/gpsVisualizerExport.log")
+    val file = File("resources/gpsVisualizerExport_places.log")
     file.writeText("name,latitude,longitude\n")
     locations.forEach { file.appendText("${it.id},${it.location.lat},${it.location.lon}\n") }
 }
 
-fun exportForGpsVizualizerTrack(locations: List<Child>) {
-    val file = File("resources/gpsVisualizerExport.log")
+
+fun exportForGpsVizualizerTrack(suffix: String, locations: List<Child>) {
+    val file = File("resources/gpsVisualizerExport_${suffix}.log")
     file.writeText("latitude,longitude\n")
     val route = locations.toMutableList()
     route.add(0, Child(-1, KORVATUNTURI, 0))
