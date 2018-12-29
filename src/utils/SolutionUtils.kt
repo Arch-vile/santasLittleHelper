@@ -44,3 +44,6 @@ fun routeFromKorvatunturi(locations: List<Location>): Route {
     return Route(stops)
 }
 
+fun sleightWeight(route: Route): Int {
+    return route.stops.map { it.weight }.fold(0) { acc, v -> acc + v }
+}

@@ -13,5 +13,11 @@ fun readInput(filename: String): List<Location> =
 fun writeOutput(solution: List<Route>) {
     val out = File("resources/output.csv")
     out.writeText("")
-    solution.map { it.stops.joinToString(separator = "; ") { it.id.toString() } }.forEach { out.appendText(it + "\n") }
+    solution
+            .map {
+                val copy = it.stops.toMutableList()
+                copy.remove(KORVATUNTURI)
+                copy
+            }
+            .map { it.joinToString(separator = "; ") { it.id.toString() } }.forEach { out.appendText(it + "\n") }
 }

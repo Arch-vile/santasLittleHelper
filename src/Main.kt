@@ -1,41 +1,19 @@
-import model.Location
-import model.Route
+import model.SLEIGHT_CAPACITY
 import solutions.AreaSelection
 import solutions.BinPacking
 import solutions.ClosestLocationStandard
 import utils.*
-import java.time.LocalDateTime
-
-fun main2(args: Array<String>) {
-
-
-    for (areaSize in 5..100 step 5) {
-
-        val Locationren = readInput("resources/nicelist.txt").toMutableList()
-        val startCount = Locationren.size
-        val target = 8135970987
-
-        var routes = emptyList<Route>().toMutableList()
-        while (Locationren.size > 0) {
-            val nextArea = closestCircularArea(Locationren, areaSize)
-
-            // Do the binpacking and select the max sleight
-            val solution = BinPacking(nextArea).maxedSleight()
-
-
-            Locationren.removeAll(solution.stops)
-            routes.add(solution)
-//            val length = routeLength(routes)
-//            println("${locations.size}\t${String.format("%f", length)}\t${(1.0 * startCount - locations.size) / startCount}\t${(length * 1.0) / target}")
-        }
-
-        println(LocalDateTime.now().toString() +
-                " area size ${areaSize.toString().padStart(5)}" +
-                " route length " + forHumans(routeLength(routes)))
-    }
-}
 
 fun main(args: Array<String>) {
+
+    println("Hello, Santa!")
+    val input = readInput("resources/nicelist.txt")
+    val solution = AreaSelection(input).solve()
+    println("Route length: ${routeLength(solution)}")
+    writeOutput(solution)
+}
+
+fun main2(args: Array<String>) {
     println("Hello, Santa!")
     val range = km(1500)
     val input = circularArea(readInput("resources/nicelist.txt"), SOUTHAFRICA, range)
@@ -54,7 +32,12 @@ fun main(args: Array<String>) {
     exportForGpsVizualizer(input)
 
 
+    solution3.map { sleightWeight(it) }
+            //.map { SLEIGHT_CAPACITY - it }
+            .forEach { println(it * 100 / SLEIGHT_CAPACITY) }
+
 }
+
 
 
 
