@@ -1,6 +1,5 @@
 package utils
 
-import model.Child
 import model.Location
 import model.Route
 import model.SLEIGHT_CAPACITY
@@ -24,26 +23,26 @@ fun distance(location1: Location, location2: Location): Double {
     return (earthRadius * c)
 }
 
-fun circularArea(locations: List<Child>, center: Location, radius: Int): List<Child> {
+fun circularArea(locations: List<Location>, center: Location, radius: Int): List<Location> {
     return locations
-            .filter { distance(center, it.location) <= radius }
+            .filter { distance(center, it) <= radius }
 }
 
-fun closestCircularArea(children: List<Child>, count: Int): List<Child> {
-    return findCircularArea(children, count, findClosest(KORVATUNTURI, children))
+fun closestCircularArea(Locationren: List<Location>, count: Int): List<Location> {
+    return findCircularArea(Locationren, count, findClosest(KORVATUNTURI, Locationren))
 }
 
-fun furthestCircularArea(children: List<Child>, count: Int): List<Child> {
-    return findCircularArea(children, count, findFurthest(KORVATUNTURI, children))
+fun furthestCircularArea(Locationren: List<Location>, count: Int): List<Location> {
+    return findCircularArea(Locationren, count, findFurthest(KORVATUNTURI, Locationren))
 }
 
-fun findCircularArea(children: List<Child>, count: Int, center: Child): List<Child> {
+fun findCircularArea(Locationren: List<Location>, count: Int, center: Location): List<Location> {
     var radius = km(10)
-    var area = circularArea(children, center.location, radius)
+    var area = circularArea(Locationren, center, radius)
 
-    while (area.size < count && area.size != children.size) {
+    while (area.size < count && area.size != Locationren.size) {
         radius += km(10)
-        area = circularArea(children, center.location, radius)
+        area = circularArea(Locationren, center, radius)
     }
 
     if (area.size > 200) {
@@ -52,21 +51,21 @@ fun findCircularArea(children: List<Child>, count: Int, center: Child): List<Chi
     return area
 }
 
-fun findFurthest(location: Location, children: List<Child>): Child =
-        findByDistance(location, children) { current, best -> current > best }
+fun findFurthest(location: Location, Locationren: List<Location>): Location =
+        findByDistance(location, Locationren) { current, best -> current > best }
 
-fun findClosest(location: Location, children: List<Child>): Child =
-        findByDistance(location, children) { current, best -> current < best }
+fun findClosest(location: Location, Locationren: List<Location>): Location =
+        findByDistance(location, Locationren) { current, best -> current < best }
 
 
-private fun findByDistance(location: Location, children: List<Child>, comparator: (Double, Double) -> Boolean): Child {
-    var bestMatch = children[0]
-    var bestDistance = distance(location, bestMatch.location)
-    for (child in children) {
-        val distance = distance(location, child.location)
+private fun findByDistance(location: Location, Locationren: List<Location>, comparator: (Double, Double) -> Boolean): Location {
+    var bestMatch = Locationren[0]
+    var bestDistance = distance(location, bestMatch)
+    for (Location in Locationren) {
+        val distance = distance(location, Location)
         if (comparator(distance, bestDistance)) {
             bestDistance = distance
-            bestMatch = child
+            bestMatch = Location
         }
     }
 
@@ -80,7 +79,7 @@ fun routeLength(solution: List<Route>): Double {
 }
 
 fun routeLength(route: Route): Double {
-    val roundtrip = route.stops.map { it.location }.toMutableList()
+    val roundtrip = route.stops.map { it }.toMutableList()
     roundtrip.add(0, KORVATUNTURI)
     roundtrip.add(KORVATUNTURI)
     return pathLength(roundtrip)
@@ -88,8 +87,8 @@ fun routeLength(route: Route): Double {
 
 fun pathLength(locations: List<Location>): Double {
     var length = 0.0
-    var current =locations[0]
-    for (location in locations.subList(1,locations.size)) {
+    var current = locations[0]
+    for (location in locations.subList(1, locations.size)) {
         length += distance(current, location)
         current = location
     }
@@ -99,7 +98,7 @@ fun pathLength(locations: List<Location>): Double {
 fun averageCapacityPercent(solution: List<Route>): Double {
     return solution
             .map {
-                (it.stops.map { it.giftWeight }.sum().toDouble()) / SLEIGHT_CAPACITY
+                (it.stops.map { it.weight }.sum().toDouble()) / SLEIGHT_CAPACITY
             }
             .average()
 }

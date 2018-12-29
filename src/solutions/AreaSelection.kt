@@ -1,29 +1,29 @@
 package solutions
 
-import model.Child
+import model.Location
 import model.Route
-import shortestPathFromKorvatunturi
 import utils.KORVATUNTURI
 import utils.expandUntilFull
 import utils.findClosest
+import utils.shortestRouteFromKorvatunturi
 
 /**
  * Selects an area that fits to sleight and does optimized route for that area
  */
 
-class AreaSelection(setup: List<Child>) {
-    val children = setup.toMutableList()
+class AreaSelection(setup: List<Location>) {
+    val locations = setup.toMutableList()
 
     fun solve(): List<Route> {
 
         val routes: MutableList<Route> = mutableListOf()
-        while (children.isNotEmpty()) {
-            println(children.size)
-            val center = findClosest(KORVATUNTURI, children)
-            val area = expandUntilFull(center.location, children)
-            val route = shortestPathFromKorvatunturi(area)
-            children.removeAll(route)
-            routes.add(Route(route))
+        while (locations.isNotEmpty()) {
+            val center = findClosest(KORVATUNTURI, locations)
+            val area = expandUntilFull(center, locations)
+
+            val route = shortestRouteFromKorvatunturi(area)
+            locations.removeAll(route.stops)
+            routes.add(route)
         }
 
         return routes

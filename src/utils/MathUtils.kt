@@ -1,6 +1,6 @@
 package utils
 
-import model.Child
+import model.Location
 import java.util.*
 
 fun factorial(number: Int): Long {
@@ -14,13 +14,13 @@ fun factorial(number: Int): Long {
 }
 
 
-fun permutations(items: List<Child>, handler: (Stack<Child>) -> Unit) {
+fun permutations(items: List<Location>, handler: (Stack<Location>) -> Unit) {
     println("Finding ${factorial(items.size)} permutations")
     return permutations(items.toMutableList(), Stack(), items.size, handler)
 }
 
 
-fun permutations(items: MutableList<Child>, permutation: Stack<Child>, size: Int, handler: (Stack<Child>) -> Unit) {
+fun permutations(items: MutableList<Location>, permutation: Stack<Location>, size: Int, handler: (Stack<Location>) -> Unit) {
 
     /* permutation stack has become equal to size that we require */
     if (permutation.size == size) {

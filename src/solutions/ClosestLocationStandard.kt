@@ -1,34 +1,34 @@
 package solutions
 
-import model.Child
+import model.Location
 import model.Route
 import model.SLEIGHT_CAPACITY
 import utils.KORVATUNTURI
 import utils.distance
 
 
-class ClosestLocationStandard(setup: List<Child>) {
+class ClosestLocationStandard(setup: List<Location>) {
     var currentLocation = KORVATUNTURI
-    val children = setup.toMutableList()
+    val locations = setup.toMutableList()
     val routes: MutableList<Route> = mutableListOf()
 
 
     fun solve(): List<Route> {
-        while (children.size > 0) {
+        while (locations.size > 0) {
             routes.add(scoutRoute())
         }
         return routes
     }
 
-    private fun findNearest(): Child {
+    private fun findNearest(): Location {
 
-        var nearest = children[0]
+        var nearest = locations[0]
         var nearestDistance = Double.MAX_VALUE
-        for (child in children) {
-            val distance = distance(currentLocation, child.location)
+        for (location in locations) {
+            val distance = distance(currentLocation, location)
             if (distance < nearestDistance) {
                 nearestDistance = distance
-                nearest = child
+                nearest = location
             }
         }
 
@@ -36,23 +36,21 @@ class ClosestLocationStandard(setup: List<Child>) {
     }
 
     private fun scoutRoute(): Route {
-        val route: MutableList<Child> = mutableListOf()
+        val route: MutableList<Location> = mutableListOf()
         var sleightWeight = 0
 
-        while (sleightWeight < SLEIGHT_CAPACITY && children.isNotEmpty()) {
+        while (sleightWeight < SLEIGHT_CAPACITY && locations.isNotEmpty()) {
             val next = findNearest()
-            sleightWeight += next.giftWeight
+            sleightWeight += next.weight
 
             if (sleightWeight < SLEIGHT_CAPACITY) {
-                currentLocation = next.location
+                currentLocation = next
                 route.add(next)
-                children.remove(next)
+                locations.remove(next)
             }
         }
 
         currentLocation = KORVATUNTURI
-//        println("Scouted for route with ${route.size} stops")
-//        println("${children.size} stops remaining")
         return Route(route.toList())
     }
 

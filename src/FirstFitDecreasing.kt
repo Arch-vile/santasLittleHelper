@@ -1,4 +1,3 @@
-import model.Child
 import model.Location
 
 /**
@@ -8,19 +7,19 @@ import model.Location
  * http://www.martinbroadhurst.com/bin-packing.html
  */
 
-class FFDPacking(val children: List<Child>, val sleightCapacity: Int) {
+class FFDPacking(val Locationren: List<Location>, val sleightCapacity: Int) {
 
     private val sleights = mutableListOf<Sleight>()
 
     fun packSleights(): List<Sleight> {
-        children
-                .sortedByDescending { it.giftWeight }
+        Locationren
+                .sortedByDescending { it.weight }
                 .forEach { placeToSleight(it) }
         return sleights
     }
 
-    private fun placeToSleight(child: Child) {
-        (sleights.firstOrNull { it.fits(child) } ?: newSleight()).add(child)
+    private fun placeToSleight(Location: Location) {
+        (sleights.firstOrNull { it.fits(Location) } ?: newSleight()).add(Location)
     }
 
     private fun newSleight(): Sleight {
@@ -31,11 +30,11 @@ class FFDPacking(val children: List<Child>, val sleightCapacity: Int) {
 
 }
 
-data class Sleight(val children: MutableList<Child>, var capacity: Int) {
-    fun fits(child: Child): Boolean = capacity >= child.giftWeight
-    fun add(child: Child) {
-        capacity -= child.giftWeight
-        children.add(child)
+data class Sleight(val locations: MutableList<Location>, var capacity: Int) {
+    fun fits(Location: Location): Boolean = capacity >= Location.weight
+    fun add(Location: Location) {
+        capacity -= Location.weight
+        locations.add(Location)
     }
 }
 
@@ -44,9 +43,9 @@ fun main(args: Array<String>) {
     // These will fill the sleights 100%
     val weights = listOf<Int>(1, 4, 9, 4, 1, 5, 8, 3, 2, 5, 7, 3, 2, 6);
 
-    val children = weights.mapIndexed { index, weight -> Child(index, Location(0.0,0.0), weight)  }
+    val Locationren = weights.mapIndexed { index, weight -> Location(index, 0.0, 0.0, weight) }
 
-    FFDPacking(children, 10).packSleights()
+    FFDPacking(Locationren, 10).packSleights()
             .forEach { println(it) }
 
 }

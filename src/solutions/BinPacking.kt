@@ -1,24 +1,23 @@
 package solutions
 
 import binPacking
-import model.Child
+import model.Location
 import model.Route
-import shortestPath
+import utils.shortestRouteFromKorvatunturi
 
-class BinPacking(setup: List<Child>) {
+class BinPacking(setup: List<Location>) {
 
-    private val children = setup
+    private val locations = setup
 
     fun solve(): List<Route> {
-        return binPacking(children)
-                .map { it.children }
-                .map { shortestPath(it) }
-                .map { Route(it) }
+        return binPacking(locations)
+                .map { it.locations }
+                .map { shortestRouteFromKorvatunturi(it) }
     }
 
     fun maxedSleight(): Route {
-        return Route(shortestPath(binPacking(children)
-                .minBy { it.capacity }!!.children))
+        return Route(binPacking(locations)
+                .minBy { it.capacity }!!.locations)
     }
 
 }

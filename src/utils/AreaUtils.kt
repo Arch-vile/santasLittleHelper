@@ -1,19 +1,18 @@
 package utils
 
-import model.Child
 import model.Location
 import model.SLEIGHT_CAPACITY
 
-fun expandUntilFull(center: Location, setup: List<Child>): List<Child> {
+fun expandUntilFull(center: Location, setup: List<Location>): List<Location> {
 
-    val children = setup.toMutableList()
-    val area = mutableListOf<Child>()
+    val locations = setup.toMutableList()
+    val area = mutableListOf<Location>()
     var weight = 0
-    while (weight < SLEIGHT_CAPACITY && children.isNotEmpty()) {
-        val next = findClosest(center, children)
-        weight += next.giftWeight
+    while (weight < SLEIGHT_CAPACITY && locations.isNotEmpty()) {
+        val next = findClosest(center, locations)
+        weight += next.weight
         area.add(next)
-        children.remove(next)
+        locations.remove(next)
     }
     if (weight > SLEIGHT_CAPACITY)
         area.removeAt(area.size - 1)
