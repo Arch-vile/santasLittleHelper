@@ -13,8 +13,14 @@ fun exportForGpsVizualizer(locations: List<Location>) {
 fun exportForGpsVizualizerTrack(suffix: String, locations: List<Location>) {
     val file = File("resources/gpsVisualizerExport_${suffix}.log")
     file.writeText("latitude,longitude\n")
-    val route = locations.toMutableList()
-    route.add(0, KORVATUNTURI)
-    route.add(KORVATUNTURI)
+    val route = locations
+            .toMutableList()
+            .map {
+                // Maps visualization fails for -90.0
+                if(it.lat == -90.0)
+                    Location(it.id, -89.0, it.lon, it.weight)
+                else
+                    it
+            }
     route.forEach { file.appendText("${it.lat},${it.lon}\n") }
 }

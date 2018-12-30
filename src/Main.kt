@@ -4,12 +4,23 @@ import solutions.BinPacking
 import solutions.ClosestLocationStandard
 import utils.*
 
+
+fun main3(args: Array<String>) {
+    val solution = deserialize()
+    solution.sortedBy { routeLength(it) }.reversed()
+            .take(10)
+            .forEachIndexed { index, route -> exportForGpsVizualizerTrack(index.toString(), route.stops) }
+
+}
+
 fun main(args: Array<String>) {
 
     println("Hello, Santa!")
     val input = readInput("resources/nicelist.txt")
     val solution = AreaSelection(input).solve()
-    println("Route length: ${routeLength(solution)}")
+
+    println("Route length: ${forHumans(routeLength(solution))}")
+    serialize(solution)
     writeOutput(solution)
 }
 

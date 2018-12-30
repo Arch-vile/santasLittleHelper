@@ -97,3 +97,6 @@ fun averageCapacityPercent(solution: List<Route>): Double {
             .average()
 }
 
+fun getById(locations: List<Location>, id: Int): Location {
+    return locations.filter { it.id == id }.get(0)
+}
