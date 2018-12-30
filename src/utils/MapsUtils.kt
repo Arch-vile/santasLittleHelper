@@ -1,7 +1,31 @@
 package utils
 
 import model.Location
+import model.Route
 import java.io.File
+
+fun exportForGpsVizualizerTrack(solution: List<Route>) {
+
+    val routesToPlot = solution.toMutableList()
+
+    while(routesToPlot.size > 8) {
+
+        val first = routesToPlot.first()
+        val last = routesToPlot.last()
+        val allStops = first.stops.toMutableList()
+        allStops.addAll(last.stops)
+        val combined = Route(allStops)
+        routesToPlot.remove(first)
+        routesToPlot.remove(last)
+        routesToPlot.add(routesToPlot.size/2, combined)
+    }
+
+    routesToPlot.forEachIndexed { index, route ->
+        exportForGpsVizualizerTrack(""+index, route.stops)
+    }
+
+    println("Created ${routesToPlot.size} files for visualization")
+}
 
 fun exportForGpsVizualizer(locations: List<Location>) {
     val file = File("resources/gpsVisualizerExport_places.log")

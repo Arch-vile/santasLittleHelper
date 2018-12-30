@@ -47,3 +47,11 @@ fun routeFromKorvatunturi(locations: List<Location>): Route {
 fun sleightWeight(route: Route): Int {
     return route.stops.map { it.weight }.fold(0) { acc, v -> acc + v }
 }
+
+
+fun removeKorvatunturi(route: Route): Route {
+    val copy = route.stops.toMutableList()
+    copy.remove(KORVATUNTURI)
+    copy.remove(KORVATUNTURI)
+    return Route(copy)
+}

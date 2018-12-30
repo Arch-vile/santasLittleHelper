@@ -18,12 +18,12 @@ class AreaSelection(setup: List<Location>) {
         /**
          * Special logic for south pole. Fetch it first and then go to Cape Town
          */
-        val stops = mutableListOf<Location>()
-        val southPole = getById(locations, 8826)
-        stops.add(southPole)
-        stops.addAll(expandUntilFilled(CAPETOWN, locations, 98, southPole.weight))
-        routes.add(shortestRouteFromKorvatunturi(stops))
-        locations.removeAll(stops)
+//        val stops = mutableListOf<Location>()
+//        val southPole = getById(locations, 8826)
+//        stops.add(southPole)
+//        stops.addAll(expandUntilFilled(CAPETOWN, locations, 98, southPole.weight))
+//        routes.add(shortestRouteFromKorvatunturi(stops))
+//        locations.removeAll(stops)
 
         while (locations.isNotEmpty()) {
             println("Pending locations ${locations.size}")

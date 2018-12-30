@@ -14,12 +14,9 @@ fun writeOutput(solution: List<Route>) {
     val out = File("resources/output.csv")
     out.writeText("")
     solution
-            .map {
-                val copy = it.stops.toMutableList()
-                copy.remove(KORVATUNTURI)
-                copy
-            }
-            .map { it.joinToString(separator = "; ") { it.id.toString() } }.forEach { out.appendText(it + "\n") }
+            .map { removeKorvatunturi(it) }
+            .map { it.stops }
+            .map { it.joinToString(separator = "; ") { it.id.toString().replace("; $".toRegex(), "") } }.forEach { out.appendText(it + "\n") }
 }
 
 fun serialize(solution: List<Route>) {
@@ -40,7 +37,7 @@ fun deserialize(): List<Route> {
                 it.split("|")
                         .filter { it.isNotEmpty() }
                         .map { it.split(",") }
-                        .map { Location(it[0].toInt(),it[1].toDouble(),it[2].toDouble(),it[3].toInt()) }
+                        .map { Location(it[0].toInt(), it[1].toDouble(), it[2].toDouble(), it[3].toInt()) }
             }
-            .map { Route(it)}
+            .map { Route(it) }
 }
