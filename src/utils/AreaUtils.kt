@@ -20,12 +20,12 @@ fun expandUntilFull(center: Location, setup: List<Location>): List<Location> {
 }
 
 
-fun expandUntilFilled(center: Location, setup: List<Location>, fillPercentage: Int, startWeight: Int = 0): List<Location> {
+fun expandUntilFilled(center: Location, setup: List<Location>, fillPercentage: Double, startWeight: Int = 0): List<Location> {
 
     val locations = setup.toMutableList()
     val area = mutableListOf<Location>()
     var weight = startWeight
-    while (  (weight*100/SLEIGHT_CAPACITY) < fillPercentage && locations.isNotEmpty()) {
+    while (  (weight*100.0/SLEIGHT_CAPACITY) < fillPercentage && locations.isNotEmpty()) {
         val next = findClosest(center, locations)
 
         if(weight + next.weight <= SLEIGHT_CAPACITY) {

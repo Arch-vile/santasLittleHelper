@@ -9,7 +9,7 @@ import utils.*
  * Selects an area that fits to sleight and does optimized route for that area
  */
 
-class AreaSelection(setup: List<Location>) {
+class AreaSelection(setup: List<Location>, val targetFill: Double, val pickTolerance: Double) {
     val locations = setup.toMutableList()
 
     fun solve(): List<Route> {
@@ -27,11 +27,11 @@ class AreaSelection(setup: List<Location>) {
 //        locations.removeAll(stops)
 
         while (locations.isNotEmpty()) {
-            println("Pending locations ${locations.size}")
+//            println("Pending locations ${locations.size}")
 
             // First fill the sleight mostly from the current location
             val center = findFurthest(KORVATUNTURI, locations)
-            val area = expandUntilFilled(center, locations, 98, 0).toMutableList()
+            val area = expandUntilFilled(center, locations, targetFill, 0).toMutableList()
             locations.removeAll(area)
 
             // Then fill remaining while heading home
@@ -42,7 +42,7 @@ class AreaSelection(setup: List<Location>) {
             for (location in locations) {
                 // TODO: Calculating distance multiple times here
                 // Lets stop adding when we get too far of the return path
-                if (distance(center, location) + distance(KORVATUNTURI, location) > distance(center, KORVATUNTURI) * 1.1) {
+                if (distance(center, location) + distance(KORVATUNTURI, location) > distance(center, KORVATUNTURI) * pickTolerance) {
                     break
                 }
 

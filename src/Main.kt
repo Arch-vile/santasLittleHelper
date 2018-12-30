@@ -1,4 +1,3 @@
-import model.SLEIGHT_CAPACITY
 import solutions.AreaSelection
 import utils.*
 
@@ -15,9 +14,9 @@ fun main3(args: Array<String>) {
 
     println("Hello, Santa!")
     val input = readInput("resources/nicelist.txt")
-    val solution = AreaSelection(input).solve()
+    val solution = AreaSelection(input, 98.0, 1.1).solve()
 
-    println("Route length: ${forHumans(routeLength(solution))}")
+    println("Route length: ${distanceForHumans(routeLength(solution))}")
     serialize(solution)
     writeOutput(solution)
 }
@@ -29,17 +28,21 @@ fun main(args: Array<String>) {
     val area = circularArea(locations, SOUTHAFRICA, range).toMutableList()
     area.addAll(circularArea(locations, WARSAW, km(500)))
 
-    //val solution1 = ClosestLocationStandard(input).solve()
-    //val solution2 = BinPacking(input).solve()
-    val solution3 = AreaSelection(area).solve()
 
-    println("areaBuilding\tSA and Warsaw\t${area.size}\t" +
-            "${solution3.size}\t${forHumans(routeLength(solution3))}\t${averageCapacityPercent(solution3)}\n")
-    exportForGpsVizualizer(area)
+    for(i in 0..100) {
 
-    exportForGpsVizualizerTrack(solution3)
+        val targetFill = 50 + Math.random()*50
+        val tolerance =  1.0 + Math.random()*0.3
 
+        val solution3 = AreaSelection(area, targetFill, tolerance).solve()
 
+        println("areaBuilding\tSA and Warsaw\t${doubleForHumans(targetFill)}\t${doubleForHumans(tolerance)}\t${area.size}\t" +
+                "${solution3.size}\t${distanceForHumans(routeLength(solution3))}\t${averageCapacityPercent(solution3)}\n")
+//    exportForGpsVizualizer(area)
+//
+//    exportForGpsVizualizerTrack(solution3)
+
+    }
 }
 
 

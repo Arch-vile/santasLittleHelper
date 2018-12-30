@@ -75,8 +75,8 @@ fun main(args: Array<String>) {
 
     val manual = Route(foo)
 
-    println(forHumans(routeLength(shortestRouteFromKorvatunturiLooping(suffled))))
-    println(forHumans(routeLength(manual)))
+    println(distanceForHumans(routeLength(shortestRouteFromKorvatunturiLooping(suffled))))
+    println(distanceForHumans(routeLength(manual)))
 
 }
 
