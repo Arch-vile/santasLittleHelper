@@ -10,18 +10,18 @@ fun main2(args: Array<String>) {
 
 }
 
-fun main3(args: Array<String>) {
+fun main(args: Array<String>) {
 
     println("Hello, Santa!")
     val input = readInput("resources/nicelist.txt")
-    val solution = AreaSelection(input, 98.0, 1.1).solve()
+    val solution = AreaSelection(input, 99.0, 1.20).solve()
 
     println("Route length: ${distanceForHumans(routeLength(solution))}")
     serialize(solution)
     writeOutput(solution)
 }
 
-fun main(args: Array<String>) {
+fun maini(args: Array<String>) {
     println("Hello, Santa!")
     val range = km(1500)
     val locations = readInput("resources/nicelist.txt")

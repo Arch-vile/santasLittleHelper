@@ -27,7 +27,7 @@ class AreaSelection(setup: List<Location>, val targetFill: Double, val pickToler
 //        locations.removeAll(stops)
 
         while (locations.isNotEmpty()) {
-//            println("Pending locations ${locations.size}")
+            println("Pending locations ${locations.size}")
 
             // First fill the sleight mostly from the current location
             val center = findFurthest(KORVATUNTURI, locations)
